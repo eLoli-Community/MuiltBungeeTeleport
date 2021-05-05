@@ -1,0 +1,20 @@
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow'
+    id 'war'
+}
+repositories {
+    maven {
+        url = 'https://papermc.io/repo/repository/maven-public/'
+    }
+}
+dependencies {
+    compileOnly 'com.destroystokyo.paper:paper-api:1.15.2-R0.1-SNAPSHOT'
+    compile(project(":MuiltBungeeTeleport-Core"))
+}
+
+processResources {
+    expand(version: version)
+}
+
+assemble.dependsOn(shadowJar)

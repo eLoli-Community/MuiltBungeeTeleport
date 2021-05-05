@@ -1,0 +1,13 @@
+name: MuiltBungeeTeleport
+version: ${version}
+main: com.eloli.mbt.bukkit.BukkitLoader
+authors:
+  - InkerBot
+description: Teleport with muilt bungee
+website: https://mohistmc.com/
+commands:
+  mbt:
+    description: Muilt bungee teleport
+    usage: /mbt <server>
+    aliases: []
+    permission: mbt.tp

@@ -1,0 +1,7 @@
+name: MuiltBungeeTeleport
+version: ${version}
+main: com.eloli.mbt.bungee.BungeeLoader
+authors:
+  - InkerBot
+description: Teleport with muilt bungee
+website: https://mohistmc.com/

@@ -1,0 +1,4 @@
+rootProject.name = 'MuiltBungeeTeleport'
+include 'MuiltBungeeTeleport-Core'
+include 'MuiltBungeeTeleport-Bukkit'
+include 'MuiltBungeeTeleport-Bungee'

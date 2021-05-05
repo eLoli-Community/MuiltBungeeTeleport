@@ -1,0 +1,11 @@
+plugins {
+    id 'java'
+}
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'com.google.guava:guava:29.0-jre'
+    compile 'com.google.code.gson:gson:2.8.6'
+}
