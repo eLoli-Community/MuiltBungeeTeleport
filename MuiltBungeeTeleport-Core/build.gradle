@@ -6,6 +6,6 @@ repositories {
 }
 
 dependencies {
-    compile 'com.google.guava:guava:29.0-jre'
-    compile 'com.google.code.gson:gson:2.8.6'
+    compileOnly 'com.google.guava:guava:29.0-jre'
+    compileOnly 'com.google.code.gson:gson:2.8.6'
 }
