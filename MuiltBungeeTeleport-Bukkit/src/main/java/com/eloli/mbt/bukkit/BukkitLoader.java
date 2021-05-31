@@ -12,6 +12,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class BukkitLoader extends JavaPlugin implements PlatformAdapter, Listener {
     public static BukkitLoader instance;
     public static MbtCore core;
+
     @Override
     public void onEnable() {
         instance = this;
@@ -37,17 +38,17 @@ public class BukkitLoader extends JavaPlugin implements PlatformAdapter, Listene
                 getLogger().warning(info);
                 exception.printStackTrace();
             }
-        },new BaseFileService(getDataFolder().toString()));
-        getServer().getPluginManager().registerEvents(this,this);
+        }, new BaseFileService(getDataFolder().toString()));
+        getServer().getPluginManager().registerEvents(this, this);
         getCommand("mbt").setExecutor((sender, command, label, args) -> {
-            if(sender instanceof Player) {
-                core.onCommand(new BukkitPlayer((Player) sender),command.getName(), args);
+            if (sender instanceof Player) {
+                core.onCommand(new BukkitPlayer((Player) sender), command.getName(), args);
             }
             return true;
         });
     }
 
-    public void onQuit(PlayerQuitEvent event){
+    public void onQuit(PlayerQuitEvent event) {
         core.onQuit(new BukkitPlayer(event.getPlayer()));
     }
 
@@ -55,7 +56,7 @@ public class BukkitLoader extends JavaPlugin implements PlatformAdapter, Listene
     public void registerPluginMessageChannel(String pChannel) {
         getServer().getMessenger()
                 .registerIncomingPluginChannel(this, pChannel, (channel, player, message) -> {
-                    core.onClientMessage(new BukkitPlayer(player),channel,message);
+                    core.onClientMessage(new BukkitPlayer(player), channel, message);
                 });
         getServer().getMessenger()
                 .registerOutgoingPluginChannel(this, pChannel);

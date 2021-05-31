@@ -7,10 +7,12 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 public class BungeePlayer extends AbstractPlayer {
     private final ProxiedPlayer handle;
-    public BungeePlayer(ProxiedPlayer handle){
+
+    public BungeePlayer(ProxiedPlayer handle) {
         super(handle.getName(), handle.getUniqueId());
-        this.handle=handle;
+        this.handle = handle;
     }
+
     @Override
     public void sendMessage(String message) {
         handle.sendMessage(message);
@@ -34,9 +36,9 @@ public class BungeePlayer extends AbstractPlayer {
     @Override
     public void teleport(String destination) {
         ServerInfo serverInfo = ProxyServer.getInstance().getServerInfo(destination);
-        if(serverInfo == null){
+        if (serverInfo == null) {
             handle.sendMessage("No such server");
-        }else {
+        } else {
             handle.connect(serverInfo);
         }
     }

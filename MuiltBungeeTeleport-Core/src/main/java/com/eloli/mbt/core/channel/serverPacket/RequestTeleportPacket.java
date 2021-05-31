@@ -3,8 +3,6 @@ package com.eloli.mbt.core.channel.serverPacket;
 import com.eloli.sodioncore.channel.ServerPacket;
 import com.eloli.sodioncore.channel.util.FieldWrapper;
 
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public class RequestTeleportPacket extends ServerPacket {
@@ -12,10 +10,11 @@ public class RequestTeleportPacket extends ServerPacket {
 
     public String destination;
 
-    public RequestTeleportPacket(){}
+    public RequestTeleportPacket() {
+    }
 
     public RequestTeleportPacket(String destination) {
-        this.destination=destination;
+        this.destination = destination;
     }
 
     @Override

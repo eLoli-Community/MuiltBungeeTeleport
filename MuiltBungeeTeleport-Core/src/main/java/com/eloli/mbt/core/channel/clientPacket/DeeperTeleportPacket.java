@@ -12,10 +12,11 @@ public class DeeperTeleportPacket extends ClientPacket {
     public String destination;
     public String token;
 
-    public DeeperTeleportPacket() {}
+    public DeeperTeleportPacket() {
+    }
 
-    public DeeperTeleportPacket(String destination,String token) {
-        this.destination=destination;
+    public DeeperTeleportPacket(String destination, String token) {
+        this.destination = destination;
         this.token = token;
     }
 

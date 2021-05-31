@@ -13,7 +13,6 @@ import com.eloli.sodioncore.config.ConfigureService;
 import com.eloli.sodioncore.file.BaseFileService;
 import com.eloli.sodioncore.logger.AbstractLogger;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -25,16 +24,21 @@ public class MbtCore {
     public static MessageChannel channel;
     public static AbstractLogger logger;
     public static ConfigureService<MainConfiguration> configureService;
+    // as Bungee
+    public ConcurrentMap<UUID, String> serverToken = new ConcurrentHashMap<>();
+    // as Sponge + Bukkit
+    public ConcurrentMap<UUID, String> clientToken = new ConcurrentHashMap<>();
+    public ConcurrentMap<UUID, String> destination = new ConcurrentHashMap<>();
 
-    public MbtCore(PlatformAdapter api, AbstractLogger logger, BaseFileService fileService){
+    public MbtCore(PlatformAdapter api, AbstractLogger logger, BaseFileService fileService) {
         MbtCore.api = api;
-        MbtCore.fileService=fileService;
+        MbtCore.fileService = fileService;
         MbtCore.logger = logger;
-        MbtCore.configureService = new ConfigureService<>(fileService,"config.json");
+        MbtCore.configureService = new ConfigureService<>(fileService, "config.json");
         try {
             configureService.init();
         } catch (Exception e) {
-            logger.warn("Failed to load config",e);
+            logger.warn("Failed to load config", e);
         }
         channel = new MessageChannel("mbt:main",
                 configureService.instance.serverKey.getBytes(StandardCharsets.UTF_8),
@@ -48,33 +52,24 @@ public class MbtCore {
         api.registerPluginMessageChannel(channel.name);
     }
 
-
-    // as Bungee
-    public ConcurrentMap<UUID, String> serverToken = new ConcurrentHashMap<>();
-
-    // as Sponge + Bukkit
-    public ConcurrentMap<UUID, String> clientToken =  new ConcurrentHashMap<>();
-
-    public ConcurrentMap<UUID, String> destination =  new ConcurrentHashMap<>();
-
-    public void onCommand(AbstractPlayer player,String name, String[] command) {
-        if(name.equals("mbt")){
-            if(player.canMbt()) {
+    public void onCommand(AbstractPlayer player, String name, String[] command) {
+        if (name.equals("mbt")) {
+            if (player.canMbt()) {
                 player.sendClientData(
                         channel.name,
                         channel.getServerFactory(RequestTeleportPacket.class).encode(
-                            new RequestTeleportPacket(
-                                    command[0]
-                            )
+                                new RequestTeleportPacket(
+                                        command[0]
+                                )
                         )
                 );
-            }else{
+            } else {
                 player.sendMessage("Permission denied.");
             }
         }
     }
 
-    public void onSwitchServer(AbstractPlayer player){
+    public void onSwitchServer(AbstractPlayer player) {
         serverToken.remove(player.getUniqueId());
         player.sendServerData(
                 channel.name,
@@ -82,15 +77,16 @@ public class MbtCore {
                         new HelloServerPacket()
                 ));
     }
+
     // as Bukkit
-    public boolean onClientMessage(AbstractPlayer player,String channelName, byte[] data) {
+    public boolean onClientMessage(AbstractPlayer player, String channelName, byte[] data) {
         if (channelName.equals(channel.name)) {
             ClientPacket packet;
 
             try {
                 packet = channel.getClientFactory(data).parser(data);
             } catch (BadSignException e) {
-                logger.info("Can't parser ClientPacket For "+player.name,e);
+                logger.info("Can't parser ClientPacket For " + player.name, e);
                 return true;
             }
 
@@ -106,20 +102,20 @@ public class MbtCore {
                 if (clientToken.containsKey(player.getUniqueId())
                         && clientToken.get(player.getUniqueId())
                         .equals(((DeeperTeleportPacket) packet).token)) {
-                   String[] destinationPath = ((DeeperTeleportPacket) packet).destination.split("\\.");
-                   String[] currentPath = configureService.instance.serverPath.split("\\.");
-                    if (destinationPath.length>currentPath.length) {
-                        if(!destinationPath[currentPath.length].equals(player.getCurrent())) {
+                    String[] destinationPath = ((DeeperTeleportPacket) packet).destination.split("\\.");
+                    String[] currentPath = configureService.instance.serverPath.split("\\.");
+                    if (destinationPath.length > currentPath.length) {
+                        if (!destinationPath[currentPath.length].equals(player.getCurrent())) {
                             player.teleport(destinationPath[currentPath.length]);
                         }
-                        if(destinationPath.length != currentPath.length+1) {
-                            if(clientToken.containsKey(player.getUniqueId())){
+                        if (destinationPath.length != currentPath.length + 1) {
+                            if (clientToken.containsKey(player.getUniqueId())) {
                                 ((DeeperTeleportPacket) packet).token = clientToken.get(player.getUniqueId());
                                 player.sendClientData(channel.name,
                                         channel.getClientFactory(DeeperTeleportPacket.class).encode(
                                                 (DeeperTeleportPacket) packet
                                         ));
-                            }else {
+                            } else {
                                 destination.put(player.getUniqueId(), ((DeeperTeleportPacket) packet).destination);
                             }
                         }
@@ -132,13 +128,13 @@ public class MbtCore {
     }
 
     // as Bungee
-    public boolean onServerMessage(AbstractPlayer player,String channelName, byte[] data) {
+    public boolean onServerMessage(AbstractPlayer player, String channelName, byte[] data) {
         if (channelName.equals(channel.name)) {
             ServerPacket packet;
             try {
                 packet = channel.getServerFactory(data).parser(data);
             } catch (BadSignException e) {
-                logger.info("Can't parser ServerPacket For "+player.name,e);
+                logger.info("Can't parser ServerPacket For " + player.name, e);
                 return true;
             }
             if (packet instanceof ShakeTokenPacket) {
@@ -155,28 +151,28 @@ public class MbtCore {
                                     )
                             ));
                 }
-            }else if(packet instanceof RequestTeleportPacket){
+            } else if (packet instanceof RequestTeleportPacket) {
                 String[] destinationPath = ((RequestTeleportPacket) packet).destination.split("\\.");
                 String[] currentPath = configureService.instance.serverPath.split("\\.");
                 boolean needBack = false;
-                if(destinationPath.length <= currentPath.length){
-                    needBack=true;
-                }else {
+                if (destinationPath.length <= currentPath.length) {
+                    needBack = true;
+                } else {
                     for (int i = 0; i < currentPath.length; i++) {
-                        if(!destinationPath[i].equals(currentPath[i])){
-                            needBack=true;
+                        if (!destinationPath[i].equals(currentPath[i])) {
+                            needBack = true;
                             break;
                         }
                     }
                 }
-                if(needBack){
+                if (needBack) {
                     player.sendClientData(channel.name,
                             channel.getServerFactory(RequestTeleportPacket.class).encode(
                                     (RequestTeleportPacket) packet
                             ));
-                }else{
+                } else {
                     player.teleport(destinationPath[currentPath.length]);
-                    if(destinationPath.length != currentPath.length+1) {
+                    if (destinationPath.length != currentPath.length + 1) {
                         destination.put(player.getUniqueId(), ((RequestTeleportPacket) packet).destination);
 
                     }

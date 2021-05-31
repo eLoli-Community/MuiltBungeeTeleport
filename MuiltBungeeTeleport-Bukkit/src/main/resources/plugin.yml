@@ -9,5 +9,5 @@ commands:
   mbt:
     description: Muilt bungee teleport
     usage: /mbt <server>
-    aliases: []
+    aliases: [ ]
     permission: mbt.tp

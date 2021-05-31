@@ -9,14 +9,15 @@ public class ShakeTokenPacket extends ServerPacket {
     public static List<FieldWrapper> fieldWrapperList = resolveFieldWrapperList(ShakeTokenPacket.class);
     public String token;
 
-    public ShakeTokenPacket(){}
-
-    @Override
-    public List<FieldWrapper> getFieldWrapperList() {
-        return null;
+    public ShakeTokenPacket() {
     }
 
     public ShakeTokenPacket(String token) {
         this.token = token;
+    }
+
+    @Override
+    public List<FieldWrapper> getFieldWrapperList() {
+        return null;
     }
 }

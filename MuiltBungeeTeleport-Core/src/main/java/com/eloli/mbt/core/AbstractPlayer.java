@@ -10,6 +10,7 @@ public abstract class AbstractPlayer {
         this.name = name;
         this.uuid = uuid;
     }
+
     public String getName() {
         return name;
     }

@@ -5,10 +5,12 @@ import org.bukkit.entity.Player;
 
 public class BukkitPlayer extends AbstractPlayer {
     private final Player handle;
-    public BukkitPlayer(Player handle){
+
+    public BukkitPlayer(Player handle) {
         super(handle.getName(), handle.getUniqueId());
-        this.handle=handle;
+        this.handle = handle;
     }
+
     @Override
     public void sendMessage(String message) {
         handle.sendMessage(message);
@@ -36,7 +38,7 @@ public class BukkitPlayer extends AbstractPlayer {
 
     @Override
     public boolean canMbt() {
-        if(handle.isOp()){
+        if (handle.isOp()) {
             return true;
         }
         return handle.hasPermission("mbt.tp");
