@@ -1,3 +1,17 @@
+plugins {
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
+    id 'org.spongepowered.plugin' version '0.9.0'
+}
+
 dependencies {
+    compile 'org.spongepowered:spongeapi:7.2.0'
+    compile(project(":MuiltBungeeTeleport-Core"))
+
     compileOnly 'com.github.eLoli-Community.SodionCore:SodionCore-Base:58f71a2d82'
 }
+
+processResources {
+    expand(version: version)
+}
+
+assemble.dependsOn(shadowJar)

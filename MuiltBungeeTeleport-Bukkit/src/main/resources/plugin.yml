@@ -11,3 +11,5 @@ commands:
     usage: /mbt <server>
     aliases: [ ]
     permission: mbt.tp
+depend:
+  - SodionCore
