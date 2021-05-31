@@ -2,16 +2,11 @@ package com.eloli.mbt.bukkit;
 
 import com.eloli.mbt.core.MbtCore;
 import com.eloli.mbt.core.PlatformAdapter;
-import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.PluginCommand;
+import com.eloli.sodioncore.file.BaseFileService;
+import com.eloli.sodioncore.logger.AbstractLogger;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerCommandSendEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class BukkitLoader extends JavaPlugin implements PlatformAdapter, Listener {
@@ -20,7 +15,29 @@ public class BukkitLoader extends JavaPlugin implements PlatformAdapter, Listene
     @Override
     public void onEnable() {
         instance = this;
-        core = new MbtCore(this,getDataFolder().toString());
+        core = new MbtCore(this, new AbstractLogger() {
+            @Override
+            public void info(String info) {
+                getLogger().info(info);
+            }
+
+            @Override
+            public void info(String info, Exception exception) {
+                getLogger().info(info);
+                exception.printStackTrace();
+            }
+
+            @Override
+            public void warn(String info) {
+                getLogger().warning(info);
+            }
+
+            @Override
+            public void warn(String info, Exception exception) {
+                getLogger().warning(info);
+                exception.printStackTrace();
+            }
+        },new BaseFileService(getDataFolder().toString()));
         getServer().getPluginManager().registerEvents(this,this);
         getCommand("mbt").setExecutor((sender, command, label, args) -> {
             if(sender instanceof Player) {
@@ -42,27 +59,5 @@ public class BukkitLoader extends JavaPlugin implements PlatformAdapter, Listene
                 });
         getServer().getMessenger()
                 .registerOutgoingPluginChannel(this, pChannel);
-    }
-
-    @Override
-    public void info(String message) {
-        getLogger().info(message);
-    }
-
-    @Override
-    public void info(String message, Exception exception) {
-        getLogger().info(message);
-        getLogger().info(exception.toString());
-    }
-
-    @Override
-    public void warn(String message) {
-        getLogger().warning(message);
-    }
-
-    @Override
-    public void warn(String message, Exception exception) {
-        getLogger().warning(message);
-        getLogger().warning(exception.toString());
     }
 }

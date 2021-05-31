@@ -12,11 +12,6 @@ import java.util.Arrays;
 import java.util.UUID;
 
 public class Helper {
-
-    public static String getConfigPath(String filename) {
-        return Paths.get(MbtCore.basePath, filename).toString();
-    }
-
     public static UUID getUuidFromName(String name) {
         return UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(StandardCharsets.UTF_8));
     }
@@ -57,59 +52,6 @@ public class Helper {
             return md.digest();
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
-            return null;
-        }
-    }
-
-    public static void saveResource(String resourcePath, boolean replace) {
-        if (resourcePath == null || resourcePath.equals("")) {
-            throw new IllegalArgumentException("ResourcePath cannot be null or empty");
-        }
-
-        resourcePath = resourcePath.replace('\\', '/');
-        InputStream in = getResource(resourcePath);
-        if (in == null) {
-            throw new IllegalArgumentException("The embedded resource '" + resourcePath + "' cannot be found");
-        }
-
-        File outFile = new File(MbtCore.basePath, resourcePath);
-        int lastIndex = resourcePath.lastIndexOf('/');
-        File outDir = new File(MbtCore.basePath, resourcePath.substring(0, Math.max(lastIndex, 0)));
-
-        if (!outDir.exists()) {
-            outDir.mkdirs();
-        }
-
-        try {
-            if (!outFile.exists() || replace) {
-                OutputStream out = new FileOutputStream(outFile);
-                byte[] buf = new byte[1024];
-                int len;
-                while ((len = in.read(buf)) > 0) {
-                    out.write(buf, 0, len);
-                }
-                out.close();
-                in.close();
-            }
-        } catch (IOException ex) {
-            MbtCore.warn("Could not save " + outFile.getName() + " to " + outFile, ex);
-        }
-    }
-
-    public static InputStream getResource(String filename) {
-        if (filename == null) {
-            throw new IllegalArgumentException("Filename cannot be null");
-        }
-
-        try {
-            URL url = Helper.class.getClassLoader().getResource(filename);
-            if (url == null) {
-                return null;
-            }
-            URLConnection connection = url.openConnection();
-            connection.setUseCaches(false);
-            return connection.getInputStream();
-        } catch (IOException ex) {
             return null;
         }
     }

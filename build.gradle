@@ -1,7 +1,5 @@
 plugins {
     id 'java'
-    id 'com.github.johnrengelman.shadow' version '5.2.0'
-    id 'war'
 }
 
 group 'com.eloli.mbt'
@@ -13,5 +11,10 @@ repositories {
 
 dependencies {
 }
-
-assemble.dependsOn(shadowJar)
+subprojects {
+    apply plugin: 'java'
+    repositories {
+        mavenCentral()
+        maven { url 'https://www.jitpack.io' }
+    }
+}

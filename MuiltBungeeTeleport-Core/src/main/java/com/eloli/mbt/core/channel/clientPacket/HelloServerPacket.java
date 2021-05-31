@@ -1,35 +1,19 @@
 package com.eloli.mbt.core.channel.clientPacket;
 
-import com.eloli.mbt.core.channel.BadSignException;
+import com.eloli.mbt.core.channel.serverPacket.ShakeTokenPacket;
+import com.eloli.sodioncore.channel.ClientPacket;
+import com.eloli.sodioncore.channel.util.FieldWrapper;
 
 import java.nio.ByteBuffer;
+import java.util.List;
 
 public class HelloServerPacket extends ClientPacket {
-    public static final int id = 0;
-    public static final int size =
-            Integer.SIZE // id
-            ;
-    public static final int bytes = size / Byte.SIZE;
+    public static List<FieldWrapper> fieldWrapperList = resolveFieldWrapperList(ShakeTokenPacket.class);
 
-    public HelloServerPacket(byte[] data) throws BadSignException {
-        if (!verify(data)) {
-            throw new BadSignException();
-        }
-    }
-
-    public HelloServerPacket() {
-
-    }
+    public HelloServerPacket(){}
 
     @Override
-    protected byte[] encode() {
-        ByteBuffer buffer = ByteBuffer.allocate(bytes);
-        buffer.putInt(id);
-        return buffer.array();
-    }
-
-    @Override
-    public int getSize() {
-        return size;
+    public List<FieldWrapper> getFieldWrapperList() {
+        return null;
     }
 }

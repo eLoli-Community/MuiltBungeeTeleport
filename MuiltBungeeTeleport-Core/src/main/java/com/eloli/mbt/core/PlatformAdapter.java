@@ -16,14 +16,6 @@
 
 package com.eloli.mbt.core;
 
-import java.util.Collection;
-
 public interface PlatformAdapter {
-
     void registerPluginMessageChannel(String channel);
-
-    public void info(String message);
-    public void info(String message,Exception exception);
-    public void warn(String message);
-    public void warn(String message,Exception exception);
 }

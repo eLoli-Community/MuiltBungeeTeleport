@@ -1,0 +1,3 @@
+dependencies {
+    compileOnly 'com.github.eLoli-Community.SodionCore:SodionCore-Base:58f71a2d82'
+}

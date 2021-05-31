@@ -2,6 +2,8 @@ package com.eloli.mbt.bungee;
 
 import com.eloli.mbt.core.MbtCore;
 import com.eloli.mbt.core.PlatformAdapter;
+import com.eloli.sodioncore.file.BaseFileService;
+import com.eloli.sodioncore.logger.AbstractLogger;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
@@ -19,7 +21,29 @@ public class BungeeLoader extends Plugin implements PlatformAdapter, Listener {
     @Override
     public void onEnable() {
         instance = this;
-        core = new MbtCore(this,getDataFolder().toString());
+        core = new MbtCore(this, new AbstractLogger() {
+            @Override
+            public void info(String info) {
+                getLogger().info(info);
+            }
+
+            @Override
+            public void info(String info, Exception exception) {
+                getLogger().info(info);
+                exception.printStackTrace();
+            }
+
+            @Override
+            public void warn(String info) {
+                getLogger().warning(info);
+            }
+
+            @Override
+            public void warn(String info, Exception exception) {
+                getLogger().warning(info);
+                exception.printStackTrace();
+            }
+        },new BaseFileService(getDataFolder().toString()));
         ProxyServer.getInstance().getPluginManager().registerListener(this,this);
     }
 
@@ -59,26 +83,5 @@ public class BungeeLoader extends Plugin implements PlatformAdapter, Listener {
                     event.getTag(),
                     event.getData()));
         }
-    }
-    @Override
-    public void info(String message) {
-        getLogger().info(message);
-    }
-
-    @Override
-    public void info(String message, Exception exception) {
-        getLogger().info(message);
-        exception.printStackTrace();
-    }
-
-    @Override
-    public void warn(String message) {
-        getLogger().warning(message);
-    }
-
-    @Override
-    public void warn(String message, Exception exception) {
-        getLogger().warning(message);
-        exception.printStackTrace();
     }
 }
