@@ -6,28 +6,24 @@ import com.eloli.sodioncore.file.BaseFileService;
 import com.eloli.sodioncore.logger.AbstractLogger;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
-import org.spongepowered.api.Platform;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
-import org.spongepowered.api.command.CommandSource;
-import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.GenericArguments;
-import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
-import org.spongepowered.api.network.ChannelBuf;
 import org.spongepowered.api.network.PlayerConnection;
-import org.spongepowered.api.network.RawDataListener;
-import org.spongepowered.api.network.RemoteConnection;
+import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.text.Text;
 
-@Plugin(id = "MuiltBungeeTeleport")
+@Plugin(id = "muiltbungeeteleport",
+        dependencies = {
+            @Dependency(id = "sodioncore"),
+        }
+)
 public class SpongeLoader implements PlatformAdapter {
     public static SpongeLoader instance;
     public static MbtCore core;
@@ -57,14 +53,15 @@ public class SpongeLoader implements PlatformAdapter {
             public void warn(String info, Exception exception) {
                 logger.warn(info,exception);
             }
-        }, new BaseFileService(Sponge.getConfigManager().getPluginConfig(this).getClass().toString()));
+        }, new BaseFileService(Sponge.getConfigManager().getPluginConfig(this).getConfigPath().getParent().toString()));
         Sponge.getCommandManager().register(this,
                 CommandSpec.builder()
                         .description(Text.of("Muilt bungee teleport")).permission("mbt.tp")
-                        //.arguments(new GenericArguments.StringElement(""))
+                        .arguments(GenericArguments.string(Text.of("dest")))
                         .executor((src, args) -> {
                             if (src instanceof Player) {
-                                core.onCommand(new SpongePlayer((Player)src), "mbt", new String[]{(String) args.getOne("dest").get()});
+                                core.onCommand(new SpongePlayer((Player)src), "mbt",
+                                        args.getAll("dest").toArray(new String[]{}));
                             }
                             return CommandResult.success();
                         }).build()

@@ -10,7 +10,8 @@ dependencies {
     compileOnly 'net.md-5:bungeecord-api:1.15-SNAPSHOT'
     compile(project(":MuiltBungeeTeleport-Core"))
 
-    compileOnly 'com.github.eLoli-Community.SodionCore:SodionCore-Base:58f71a2d82'
+    compileOnly 'com.github.eLoli-Community.SodionCore:SodionCore-Bungee:087f6413db'
+    compile 'com.github.eLoli-Community.SodionCore:SodionCore-Base:087f6413db'
 }
 
 processResources {

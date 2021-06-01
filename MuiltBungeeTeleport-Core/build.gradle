@@ -2,5 +2,5 @@ dependencies {
     compileOnly 'com.google.guava:guava:29.0-jre'
     compileOnly 'com.google.code.gson:gson:2.8.6'
 
-    compileOnly 'com.github.eLoli-Community.SodionCore:SodionCore-Base:58f71a2d82'
+    compileOnly 'com.github.eLoli-Community.SodionCore:SodionCore-Base:087f6413db'
 }

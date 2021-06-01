@@ -9,6 +9,7 @@ import com.eloli.sodioncore.channel.BadSignException;
 import com.eloli.sodioncore.channel.ClientPacket;
 import com.eloli.sodioncore.channel.MessageChannel;
 import com.eloli.sodioncore.channel.ServerPacket;
+import com.eloli.sodioncore.channel.util.ByteUtil;
 import com.eloli.sodioncore.config.ConfigureService;
 import com.eloli.sodioncore.file.BaseFileService;
 import com.eloli.sodioncore.logger.AbstractLogger;
@@ -35,14 +36,15 @@ public class MbtCore {
         MbtCore.fileService = fileService;
         MbtCore.logger = logger;
         MbtCore.configureService = new ConfigureService<>(fileService, "config.json");
+        configureService.register(null,MainConfiguration.class);
         try {
             configureService.init();
         } catch (Exception e) {
             logger.warn("Failed to load config", e);
         }
         channel = new MessageChannel("mbt:main",
-                configureService.instance.serverKey.getBytes(StandardCharsets.UTF_8),
-                configureService.instance.clientKey.getBytes(StandardCharsets.UTF_8))
+                ByteUtil.sha256(configureService.instance.serverKey.getBytes(StandardCharsets.UTF_8)),
+                ByteUtil.sha256(configureService.instance.clientKey.getBytes(StandardCharsets.UTF_8)))
                 // Client packets
                 .registerClientPacket(HelloServerPacket.class)
                 .registerClientPacket(DeeperTeleportPacket.class)
@@ -91,6 +93,7 @@ public class MbtCore {
             }
 
             if (packet instanceof HelloServerPacket) {
+                logger.info("HelloServerPacket");
                 String proxyToken = Helper.toStringUuid(UUID.randomUUID());
                 clientToken.put(player.getUniqueId(), proxyToken);
                 player.sendClientData(channel.name,
@@ -99,6 +102,7 @@ public class MbtCore {
                                         new ShakeTokenPacket(proxyToken)
                                 ));
             } else if (packet instanceof DeeperTeleportPacket) {
+                logger.info("DeeperTeleportPacket:"+((DeeperTeleportPacket) packet).destination);
                 if (clientToken.containsKey(player.getUniqueId())
                         && clientToken.get(player.getUniqueId())
                         .equals(((DeeperTeleportPacket) packet).token)) {
@@ -134,10 +138,11 @@ public class MbtCore {
             try {
                 packet = channel.getServerFactory(data).parser(data);
             } catch (BadSignException e) {
-                logger.info("Can't parser ServerPacket For " + player.name, e);
+                logger.info("Can't parser ServerPacket For " + player.name+"["+player.getCurrent()+"]", e);
                 return true;
             }
             if (packet instanceof ShakeTokenPacket) {
+                logger.info("ShakeTokenPacket");
                 String token = ((ShakeTokenPacket) packet).token;
                 serverToken.put(
                         player.getUniqueId(),
@@ -152,6 +157,7 @@ public class MbtCore {
                             ));
                 }
             } else if (packet instanceof RequestTeleportPacket) {
+                logger.info("RequestTeleportPacket: " + ((RequestTeleportPacket) packet).destination);
                 String[] destinationPath = ((RequestTeleportPacket) packet).destination.split("\\.");
                 String[] currentPath = configureService.instance.serverPath.split("\\.");
                 boolean needBack = false;

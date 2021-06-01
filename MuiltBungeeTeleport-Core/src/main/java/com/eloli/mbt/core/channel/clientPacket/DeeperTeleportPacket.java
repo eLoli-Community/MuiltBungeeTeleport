@@ -1,15 +1,18 @@
 package com.eloli.mbt.core.channel.clientPacket;
 
-import com.eloli.mbt.core.channel.serverPacket.ShakeTokenPacket;
 import com.eloli.sodioncore.channel.ClientPacket;
 import com.eloli.sodioncore.channel.util.FieldWrapper;
+import com.eloli.sodioncore.channel.util.Priority;
 
 import java.util.List;
 
 public class DeeperTeleportPacket extends ClientPacket {
-    public static List<FieldWrapper> fieldWrapperList = resolveFieldWrapperList(ShakeTokenPacket.class);
+    public static List<FieldWrapper> fieldWrapperList = resolveFieldWrapperList(DeeperTeleportPacket.class);
 
+    @Priority(0)
     public String destination;
+
+    @Priority(1)
     public String token;
 
     public DeeperTeleportPacket() {

@@ -7,7 +7,7 @@ dependencies {
     compile 'org.spongepowered:spongeapi:7.2.0'
     compile(project(":MuiltBungeeTeleport-Core"))
 
-    compileOnly 'com.github.eLoli-Community.SodionCore:SodionCore-Base:58f71a2d82'
+    compileOnly 'com.github.eLoli-Community.SodionCore:SodionCore-Base:087f6413db'
 }
 
 processResources {
